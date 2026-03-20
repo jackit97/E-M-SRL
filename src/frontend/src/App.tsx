@@ -284,23 +284,43 @@ function App() {
     setMessage('Sessione terminata.')
   }
 
+  function renderRequestStatus(status: string) {
+    const value = status.toLowerCase()
+    if (value.includes('closed')) return { label: 'Chiusa', className: 'status closed' }
+    if (value.includes('proposal')) return { label: 'Proposta inviata', className: 'status progress' }
+    if (value.includes('analysis') || value.includes('charge') || value.includes('appointment')) {
+      return { label: 'In lavorazione', className: 'status progress' }
+    }
+
+    return { label: 'Nuova', className: 'status new' }
+  }
+
   return (
     <main className="page">
-      <header className="topbar">
-        <h1>E&M Casa Personalizzata</h1>
-        <div className="tag">Fase 1 • Sito + Web App + Admin</div>
-        {token ? (
-          <button onClick={logout}>Logout</button>
-        ) : null}
+      <header className="topbar card">
+        <div>
+          <p className="eyebrow">EM CASA PERSONALIZZATA</p>
+          <h1>E&M Casa</h1>
+          <p className="muted">Fase 1 • Sito vetrina + area cliente + pannello admin</p>
+        </div>
+        <div className="topbar-actions">
+          <div className="tag">API: {apiBaseUrl}</div>
+          {token ? (
+            <button className="button ghost" onClick={logout}>Logout</button>
+          ) : null}
+        </div>
       </header>
 
       {siteContent ? (
-        <section className="card">
-          <h2>Sito vetrina</h2>
-          <p>{siteContent.home}</p>
-          <p><strong>Come funziona:</strong> {siteContent.comeFunziona}</p>
-          <p><strong>Abbonamento:</strong> {siteContent.abbonamento}</p>
-          <p><strong>Chi siamo:</strong> {siteContent.chiSiamo}</p>
+        <section className="card hero">
+          <div className="hero-main">
+            <h2>{siteContent.home}</h2>
+            <p className="muted">{siteContent.comeFunziona}</p>
+          </div>
+          <div className="hero-meta">
+            <p><strong>Abbonamento</strong><br />{siteContent.abbonamento}</p>
+            <p><strong>Chi siamo</strong><br />{siteContent.chiSiamo}</p>
+          </div>
           <p>
             <strong>Contatti:</strong> {siteContent.contatti.telefono} · {siteContent.contatti.email} · {siteContent.contatti.sede}
           </p>
@@ -308,9 +328,10 @@ function App() {
       ) : null}
 
       {!token ? (
-        <section className="grid two">
+        <section className="grid two auth-grid">
           <form className="card" onSubmit={handleRegister}>
             <h2>Registrazione cliente</h2>
+            <p className="muted">Crea l’account per accedere all’area cliente e inviare richieste.</p>
             <input
               placeholder="Nome e cognome"
               value={registerForm.fullName}
@@ -341,6 +362,7 @@ function App() {
 
           <form className="card" onSubmit={handleLogin}>
             <h2>Login</h2>
+            <p className="muted">Accedi con il tuo account cliente o con account admin.</p>
             <input
               placeholder="Email"
               type="email"
@@ -361,22 +383,25 @@ function App() {
 
       {token && role === 'Customer' ? (
         <section className="grid one">
-          <div className="card">
+          <div className="card summary">
             <h2>Area cliente</h2>
             {me ? (
               <>
                 <p><strong>Utente:</strong> {me.fullName} ({me.email})</p>
                 <p>
                   <strong>Abbonamento:</strong>{' '}
-                  {me.subscriptionActive ? `attivo fino al ${new Date(me.subscriptionExpiresAtUtc ?? '').toLocaleDateString()}` : 'non attivo'}
+                  <span className={me.subscriptionActive ? 'badge active' : 'badge inactive'}>
+                    {me.subscriptionActive ? `Attivo fino al ${new Date(me.subscriptionExpiresAtUtc ?? '').toLocaleDateString()}` : 'Non attivo'}
+                  </span>
                 </p>
               </>
             ) : null}
-            <button onClick={activateSubscription}>Attiva abbonamento annuale</button>
+            <button className="button" onClick={activateSubscription}>Attiva abbonamento annuale</button>
           </div>
 
           <form className="card" onSubmit={submitHouseRequest}>
             <h2>Crea la tua casa</h2>
+            <p className="muted">Compila le preferenze principali e invia la tua pratica.</p>
             <div className="grid two">
               <input placeholder="Regione" value={newRequest.region} onChange={(event) => setNewRequest({ ...newRequest, region: event.target.value })} />
               <input placeholder="Provincia" value={newRequest.province} onChange={(event) => setNewRequest({ ...newRequest, province: event.target.value })} />
@@ -396,15 +421,19 @@ function App() {
               value={newRequest.notes}
               onChange={(event) => setNewRequest({ ...newRequest, notes: event.target.value })}
             />
-            <button type="submit">Invia richiesta</button>
+            <button className="button" type="submit">Invia richiesta</button>
           </form>
 
           <div className="card">
             <h2>Le mie pratiche</h2>
-            <ul>
+            <ul className="request-list">
               {myRequests.map((item) => (
-                <li key={item.id}>
-                  <strong>{item.region} - {item.cityOrArea}</strong> · {item.propertyType} · {item.status}
+                <li key={item.id} className="request-item">
+                  <div>
+                    <strong>{item.region} - {item.cityOrArea}</strong>
+                    <p className="muted">{item.propertyType} · Budget €{item.budgetMin} - €{item.budgetMax}</p>
+                  </div>
+                  <span className={renderRequestStatus(item.status).className}>{renderRequestStatus(item.status).label}</span>
                 </li>
               ))}
               {myRequests.length === 0 ? <li>Nessuna richiesta inviata.</li> : null}
@@ -417,7 +446,7 @@ function App() {
         <section className="grid one">
           <div className="card">
             <h2>Pannello amministratore</h2>
-            <p>Utenti registrati: {adminUsers.length}</p>
+            <p className="muted">Utenti registrati: {adminUsers.length}</p>
             <ul>
               {adminUsers.map((user) => (
                 <li key={user.id}>{user.fullName} · {user.email} · {user.role}</li>
