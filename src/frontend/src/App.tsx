@@ -42,7 +42,7 @@ type HouseRequest = {
   budgetMax: number
   propertyType: string
   status: string
-  createdAtUtc: string
+  createdAt: string
 }
 
 type AdminUser = {
@@ -295,114 +295,155 @@ function App() {
     return { label: 'Nuova', className: 'status new' }
   }
 
+  function goToSection(id: string) {
+    const section = document.getElementById(id)
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const guestSections = [
+    { id: 'login-section', label: 'Login' },
+    { id: 'register-section', label: 'Registrazione' },
+  ]
+
+  const customerSections = [
+    { id: 'customer-profile', label: 'Profilo' },
+    { id: 'customer-request', label: 'Nuova richiesta' },
+    { id: 'customer-practices', label: 'Le mie pratiche' },
+  ]
+
+  const adminSections = [
+    { id: 'admin-users', label: 'Utenti' },
+    { id: 'admin-practices', label: 'Pratiche clienti' },
+  ]
+
+  const sections = !token
+    ? guestSections
+    : role === 'Customer'
+      ? customerSections
+      : adminSections
+
   return (
-    <main className="page">
-      <header className="topbar card">
-        <div>
-          <p className="eyebrow">EM CASA PERSONALIZZATA</p>
-          <h1>E&M Casa</h1>
-          <p className="muted">Fase 1 • Sito vetrina + area cliente + pannello admin</p>
-        </div>
-        <div className="topbar-actions">
-          <div className="tag">API: {apiBaseUrl}</div>
-          {token ? (
-            <button className="button ghost" onClick={logout}>Logout</button>
-          ) : null}
+    <main className="app-page">
+      <header className="site-header">
+        <div className="site-header-inner">
+          <button className="brand" onClick={() => goToSection('top')}>
+            <img className="brand-logo" src="/logo-emcasa.jpg" alt="Logo E&M Casa" />
+            <div className="brand-text">
+              <p className="brand-kicker">E&M Casa Personalizzata</p>
+              <strong>Web App Immobiliare</strong>
+            </div>
+          </button>
+
+          <nav className="site-nav" aria-label="Sezioni disponibili">
+            {sections.map((section) => (
+              <button key={section.id} className="site-nav-link" onClick={() => goToSection(section.id)}>
+                {section.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="site-header-actions">
+            <span className="tag">API: {apiBaseUrl}</span>
+            {token ? (
+              <button className="button ghost" onClick={logout}>Logout</button>
+            ) : null}
+          </div>
         </div>
       </header>
 
-      {siteContent ? (
-        <section className="card hero">
-          <div className="hero-main">
-            <h2>{siteContent.home}</h2>
-            <p className="muted">{siteContent.comeFunziona}</p>
-          </div>
+      <section className="hero" id="top">
+        <p className="hero-kicker">INSIEME COSTRUIAMO IL TUO SOGNO</p>
+        <h1>{siteContent?.home ?? 'E&M Casa Personalizzata'}</h1>
+        <p>{siteContent?.comeFunziona ?? 'Registrati, attiva abbonamento, crea richiesta e segui gli aggiornamenti.'}</p>
+        {siteContent ? (
           <div className="hero-meta">
-            <p><strong>Abbonamento</strong><br />{siteContent.abbonamento}</p>
-            <p><strong>Chi siamo</strong><br />{siteContent.chiSiamo}</p>
+            <span><strong>Abbonamento:</strong> {siteContent.abbonamento}</span>
+            <span><strong>Chi siamo:</strong> {siteContent.chiSiamo}</span>
           </div>
-          <p>
-            <strong>Contatti:</strong> {siteContent.contatti.telefono} · {siteContent.contatti.email} · {siteContent.contatti.sede}
-          </p>
-        </section>
-      ) : null}
+        ) : null}
+      </section>
 
       {!token ? (
-        <section className="grid two auth-grid">
-          <form className="card" onSubmit={handleRegister}>
+        <>
+          <section className="section" id="login-section">
+            <h2>Login</h2>
+            <p className="muted">Accedi con il tuo account cliente o admin.</p>
+            <form className="form-grid" onSubmit={handleLogin}>
+              <input
+                placeholder="Email"
+                type="email"
+                value={loginForm.email}
+                onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })}
+              />
+              <input
+                placeholder="Password"
+                type="password"
+                value={loginForm.password}
+                onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })}
+              />
+              <button className="button" type="submit">Accedi</button>
+            </form>
+          </section>
+
+          <section className="section" id="register-section">
             <h2>Registrazione cliente</h2>
             <p className="muted">Crea l’account per accedere all’area cliente e inviare richieste.</p>
-            <input
-              placeholder="Nome e cognome"
-              value={registerForm.fullName}
-              onChange={(event) => setRegisterForm({ ...registerForm, fullName: event.target.value })}
-            />
-            <input
-              placeholder="Email"
-              type="email"
-              value={registerForm.email}
-              onChange={(event) => setRegisterForm({ ...registerForm, email: event.target.value })}
-            />
-            <input
-              placeholder="Password"
-              type="password"
-              value={registerForm.password}
-              onChange={(event) => setRegisterForm({ ...registerForm, password: event.target.value })}
-            />
-            <label className="checkbox">
+            <form className="form-grid" onSubmit={handleRegister}>
               <input
-                type="checkbox"
-                checked={registerForm.privacyConsent}
-                onChange={(event) => setRegisterForm({ ...registerForm, privacyConsent: event.target.checked })}
+                placeholder="Nome e cognome"
+                value={registerForm.fullName}
+                onChange={(event) => setRegisterForm({ ...registerForm, fullName: event.target.value })}
               />
-              Consenso privacy
-            </label>
-            <button type="submit">Registrati</button>
-          </form>
-
-          <form className="card" onSubmit={handleLogin}>
-            <h2>Login</h2>
-            <p className="muted">Accedi con il tuo account cliente o con account admin.</p>
-            <input
-              placeholder="Email"
-              type="email"
-              value={loginForm.email}
-              onChange={(event) => setLoginForm({ ...loginForm, email: event.target.value })}
-            />
-            <input
-              placeholder="Password"
-              type="password"
-              value={loginForm.password}
-              onChange={(event) => setLoginForm({ ...loginForm, password: event.target.value })}
-            />
-            <button type="submit">Accedi</button>
-            <small>Per admin usa credenziali seed configurate nel backend.</small>
-          </form>
-        </section>
+              <input
+                placeholder="Email"
+                type="email"
+                value={registerForm.email}
+                onChange={(event) => setRegisterForm({ ...registerForm, email: event.target.value })}
+              />
+              <input
+                placeholder="Password"
+                type="password"
+                value={registerForm.password}
+                onChange={(event) => setRegisterForm({ ...registerForm, password: event.target.value })}
+              />
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  checked={registerForm.privacyConsent}
+                  onChange={(event) => setRegisterForm({ ...registerForm, privacyConsent: event.target.checked })}
+                />
+                Consenso privacy
+              </label>
+              <button className="button" type="submit">Registrati</button>
+            </form>
+          </section>
+        </>
       ) : null}
 
       {token && role === 'Customer' ? (
-        <section className="grid one">
-          <div className="card summary">
-            <h2>Area cliente</h2>
+        <>
+          <section className="section" id="customer-profile">
+            <h2>Profilo cliente</h2>
             {me ? (
               <>
                 <p><strong>Utente:</strong> {me.fullName} ({me.email})</p>
                 <p>
                   <strong>Abbonamento:</strong>{' '}
-                  <span className={me.subscriptionActive ? 'badge active' : 'badge inactive'}>
+                  <span className={me.subscriptionActive ? 'status active' : 'status inactive'}>
                     {me.subscriptionActive ? `Attivo fino al ${new Date(me.subscriptionExpiresAtUtc ?? '').toLocaleDateString()}` : 'Non attivo'}
                   </span>
                 </p>
               </>
             ) : null}
             <button className="button" onClick={activateSubscription}>Attiva abbonamento annuale</button>
-          </div>
+          </section>
 
-          <form className="card" onSubmit={submitHouseRequest}>
-            <h2>Crea la tua casa</h2>
-            <p className="muted">Compila le preferenze principali e invia la tua pratica.</p>
-            <div className="grid two">
+          <section className="section" id="customer-request">
+            <h2>Nuova richiesta casa</h2>
+            <p className="muted">Compila i campi principali e invia la pratica.</p>
+            <form className="form-grid two-columns" onSubmit={submitHouseRequest}>
               <input placeholder="Regione" value={newRequest.region} onChange={(event) => setNewRequest({ ...newRequest, region: event.target.value })} />
               <input placeholder="Provincia" value={newRequest.province} onChange={(event) => setNewRequest({ ...newRequest, province: event.target.value })} />
               <input placeholder="Comune / Zona" value={newRequest.cityOrArea} onChange={(event) => setNewRequest({ ...newRequest, cityOrArea: event.target.value })} />
@@ -415,16 +456,17 @@ function App() {
               <input placeholder="Classe energetica" value={newRequest.energyClass} onChange={(event) => setNewRequest({ ...newRequest, energyClass: event.target.value })} />
               <input placeholder="Stile" value={newRequest.style} onChange={(event) => setNewRequest({ ...newRequest, style: event.target.value })} />
               <input placeholder="Livello finiture" value={newRequest.finishingLevel} onChange={(event) => setNewRequest({ ...newRequest, finishingLevel: event.target.value })} />
-            </div>
-            <textarea
-              placeholder="Note aggiuntive"
-              value={newRequest.notes}
-              onChange={(event) => setNewRequest({ ...newRequest, notes: event.target.value })}
-            />
-            <button className="button" type="submit">Invia richiesta</button>
-          </form>
+              <textarea
+                className="full"
+                placeholder="Note aggiuntive"
+                value={newRequest.notes}
+                onChange={(event) => setNewRequest({ ...newRequest, notes: event.target.value })}
+              />
+              <button className="button" type="submit">Invia richiesta</button>
+            </form>
+          </section>
 
-          <div className="card">
+          <section className="section" id="customer-practices">
             <h2>Le mie pratiche</h2>
             <ul className="request-list">
               {myRequests.map((item) => (
@@ -438,24 +480,23 @@ function App() {
               ))}
               {myRequests.length === 0 ? <li>Nessuna richiesta inviata.</li> : null}
             </ul>
-          </div>
-        </section>
+          </section>
+        </>
       ) : null}
 
       {token && role === 'Admin' ? (
-        <section className="grid one">
-          <div className="card">
-            <h2>Pannello amministratore</h2>
-            <p className="muted">Utenti registrati: {adminUsers.length}</p>
+        <>
+          <section className="section" id="admin-users">
+            <h2>Utenti registrati</h2>
             <ul>
               {adminUsers.map((user) => (
                 <li key={user.id}>{user.fullName} · {user.email} · {user.role}</li>
               ))}
             </ul>
-          </div>
+          </section>
 
-          <div className="card">
-            <h2>Pratiche cliente</h2>
+          <section className="section" id="admin-practices">
+            <h2>Pratiche clienti</h2>
             <ul>
               {adminRequests.map((item) => (
                 <li key={item.id} className="admin-row">
@@ -474,11 +515,21 @@ function App() {
               ))}
               {adminRequests.length === 0 ? <li>Nessuna pratica disponibile.</li> : null}
             </ul>
-          </div>
-        </section>
+          </section>
+        </>
       ) : null}
 
       {message ? <p className="message">{message}</p> : null}
+
+      {siteContent ? (
+        <footer className="footer">
+          <p className="brand-kicker">CONTATTI</p>
+          <h2>Parla con E&M Casa</h2>
+          <p><strong>Telefono:</strong> {siteContent.contatti.telefono}</p>
+          <p><strong>Email:</strong> {siteContent.contatti.email}</p>
+          <p><strong>Sede:</strong> {siteContent.contatti.sede}</p>
+        </footer>
+      ) : null}
     </main>
   )
 }
