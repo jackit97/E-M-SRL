@@ -1,0 +1,119 @@
+--- PAGE 1 ---
+E&M Casa Personalizzata - Progetto piattaforma digitale
+Pagina 1
+PROGETTO PIATTAFORMA DIGITALE
+E&M Casa Personalizzata
+Sito Web + Web App + App Mobile iPhone/Android
+ E&M Casa Personalizzata
+ Documento sintetico di presentazione del progetto da inviare a programmatore, web agency o
+ software house.
+Societa
+Modello
+Prezzo abbonamento
+E&M Srl
+Piattaforma immobiliare con area riservata, web app e app
+mobile
+Euro 14,99 / anno
+1. Idea del progetto
+La E&M Srl vuole realizzare una piattaforma digitale per clienti che desiderano trovare o sviluppare una casa
+personalizzata in Italia. Il sistema dovra comprendere un sito vetrina, una web app con area riservata e una
+vera app mobile per iPhone e Android, tutte collegate allo stesso pannello gestionale.
+ Registrazione utente e accesso sicuro.
+ Abbonamento annuale di Euro 14,99.
+ Compilazione richiesta dettagliata della casa desiderata.
+ Gestione richieste, documenti, aggiornamenti e comunicazioni.
+ Pannello amministratore per la E&M Srl con gestione utenti e pratiche.
+2. Obiettivo
+Trasformare le richieste dei clienti in pratiche organizzate, contatti qualificati e opportunita commerciali.
+L'utente indica zona, budget e caratteristiche dell'immobile; in base a tali scelte la E&M Srl si attiva per
+proporre o realizzare la soluzione piu adatta.
+3. Struttura del sistema
+Area
+Contenuto principale
+Sito web pubblico
+Home, Come funziona, Abbonamento, Chi siamo, Contatti e invito alla
+registrazione.
+Web app
+Login, area cliente, compilazione richieste, upload file, stato pratiche e documenti.
+App mobile
+Funzioni principali da smartphone con notifiche, gestione richieste e consultazione
+aggiornamenti.
+Pannello admin
+Gestione utenti, abbonamenti, richieste, documenti, stati pratica e comunicazioni.
+4. Funzionamento lato cliente
+ Creazione account e accesso alla piattaforma.
+ Pagamento abbonamento annuale di Euro 14,99.
+
+
+--- PAGE 2 ---
+E&M Casa Personalizzata - Progetto piattaforma digitale
+Pagina 2
+ Compilazione modulo con localita desiderata, budget, tipologia immobile, metratura e personalizzazioni.
+ Caricamento immagini di riferimento, file e note aggiuntive.
+ Monitoraggio dello stato della richiesta nella propria area riservata.
+ Ricezione di comunicazioni, proposte, documenti e appuntamenti.
+5. Campi del modulo 'Crea la tua casa'
+ Regione, provincia, comune o zona desiderata
+ Budget minimo e massimo
+ Tipologia immobile: appartamento, villetta, villa, casa indipendente, terreno con progetto
+ Casa nuova, usata, da ristrutturare o da costruire
+ Metri quadrati, camere, bagni, giardino, garage, terrazzo, piscina, cantina
+ Classe energetica, stile e livello finiture
+ Tempistiche desiderate e note aggiuntive
+ Upload di immagini, planimetrie o PDF
+6. Funzioni dell'app mobile
+L'app iPhone e Android dovra essere collegata alla stessa piattaforma del sito e della web app, con accesso
+tramite le stesse credenziali.
+ Registrazione e login
+ Pagamento e gestione abbonamento
+ Compilazione richiesta casa personalizzata
+ Caricamento foto e allegati da telefono
+ Visualizzazione stato pratica
+ Notifiche push per aggiornamenti e proposte
+ Accesso ai documenti ricevuti
+ Contatto rapido con la E&M Srl e richiesta appuntamento
+7. Funzioni del pannello amministratore
+ Visualizzazione utenti registrati e abbonamenti attivi
+ Ricerca e filtro richieste per zona, budget e tipologia
+ Cambio stato pratica: inviata, in analisi, presa in carico, proposta inviata, appuntamento fissato, chiusa
+ Caricamento documenti, offerte, schede e proposte
+ Gestione comunicazioni e notifiche
+ Modifica dei contenuti principali del sito
+ Esportazione dati e consultazione storici
+8. Richieste tecniche minime
+ Grafica professionale e responsive, ottimizzata per smartphone
+ Area riservata sicura con gestione password e consensi privacy
+ Sistema di pagamento online per abbonamento annuale
+ Database clienti e richieste
+ Email automatiche di conferma, rinnovo e aggiornamento pratica
+ Integrazione WhatsApp o pulsante contatto rapido
+ Architettura predisposta per future evoluzioni
+9. Fasi di sviluppo consigliate
+
+
+--- PAGE 3 ---
+E&M Casa Personalizzata - Progetto piattaforma digitale
+Pagina 3
+Fase
+Contenuto
+Fase 1
+Sito web vetrina + web app + pannello amministratore.
+Fase 2
+App mobile iPhone e Android collegata al sistema gia realizzato.
+Fase 3
+Funzioni evolutive: notifiche avanzate, chat interna, analisi richieste e funzioni premium.
+10. Contatti E&M Srl
+Telefono
+Email
+Sede
+328 205 4849
+emsrlimpresa@gmail.com
+Lavezzola, Via Adige 1, Comune di
+Conselice
+TESTO BREVE DA INVIARE A PROGRAMMATORE O AGENZIA
+Mi serve un sito web + web app + app iPhone/Android per la E&M Srl,
+con abbonamento annuale, area clienti, richieste personalizzate e pannello admin.
+Documento preparato come base di lavoro commerciale e tecnica. Potra essere ulteriormente integrato con preventivo,
+tempi di sviluppo e dettagli grafici richiesti dal fornitore software.
+
+
