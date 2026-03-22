@@ -3,6 +3,25 @@ import type { FormEvent } from 'react'
 import './App.css'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5240'
+const plausibleDomain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined
+const analyticsScriptId = 'emcasa-analytics-script'
+
+function removeCookie(name: string) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`
+}
+
+function clearTrackingCookies() {
+  const cookieNames = document.cookie
+    .split(';')
+    .map((part) => part.trim().split('=')[0])
+    .filter(Boolean)
+
+  cookieNames.forEach((cookieName) => {
+    if (/^(_ga|_gid|_gat|_fbp|_clck|_clsk|_hjSession|_hjSessionUser)/i.test(cookieName)) {
+      removeCookie(cookieName)
+    }
+  })
+}
 
 type SiteContent = {
   home: string
@@ -126,6 +145,7 @@ function App() {
   const [siteContent, setSiteContent] = useState<SiteContent | null>(null)
   const [token, setToken] = useState(localStorage.getItem('emcasa_token') ?? '')
   const [role, setRole] = useState<'Customer' | 'Admin' | ''>((localStorage.getItem('emcasa_role') as 'Customer' | 'Admin') ?? '')
+  const [cookieConsent, setCookieConsent] = useState<'accepted' | 'rejected' | ''>((localStorage.getItem('emcasa_cookie_consent') as 'accepted' | 'rejected') ?? '')
   const [message, setMessage] = useState('')
   const [me, setMe] = useState<MeResponse | null>(null)
 
@@ -193,6 +213,38 @@ function App() {
       })
       .catch((error: Error) => setMessage(error.message))
   }, [token, role])
+
+  useEffect(() => {
+    if (!cookieConsent) {
+      return
+    }
+
+    if (cookieConsent === 'rejected') {
+      localStorage.setItem('emcasa_analytics_enabled', 'false')
+      localStorage.removeItem('emcasa_analytics_client_id')
+      clearTrackingCookies()
+
+      const existingScript = document.getElementById(analyticsScriptId)
+      if (existingScript) {
+        existingScript.remove()
+      }
+
+      return
+    }
+
+    localStorage.setItem('emcasa_analytics_enabled', 'true')
+
+    if (!plausibleDomain || document.getElementById(analyticsScriptId)) {
+      return
+    }
+
+    const script = document.createElement('script')
+    script.id = analyticsScriptId
+    script.defer = true
+    script.setAttribute('data-domain', plausibleDomain)
+    script.src = 'https://plausible.io/js/script.js'
+    document.head.appendChild(script)
+  }, [cookieConsent])
 
   async function handleRegister(event: FormEvent) {
     event.preventDefault()
@@ -282,6 +334,11 @@ function App() {
     setRole('')
     setMe(null)
     setMessage('Sessione terminata.')
+  }
+
+  function setCookieChoice(choice: 'accepted' | 'rejected') {
+    localStorage.setItem('emcasa_cookie_consent', choice)
+    setCookieConsent(choice)
   }
 
   function renderRequestStatus(status: string) {
@@ -529,6 +586,19 @@ function App() {
           <p><strong>Email:</strong> {siteContent.contatti.email}</p>
           <p><strong>Sede:</strong> {siteContent.contatti.sede}</p>
         </footer>
+      ) : null}
+
+      {!cookieConsent ? (
+        <aside className="cookie-banner" role="dialog" aria-live="polite" aria-label="Preferenze cookie">
+          <p>
+            Questo sito utilizza cookie tecnici per garantire il funzionamento della piattaforma.
+            Puoi accettare o rifiutare i cookie non essenziali.
+          </p>
+          <div className="cookie-actions">
+            <button className="button ghost" onClick={() => setCookieChoice('rejected')}>Rifiuta</button>
+            <button className="button" onClick={() => setCookieChoice('accepted')}>Accetta</button>
+          </div>
+        </aside>
       ) : null}
     </main>
   )
